@@ -56,7 +56,7 @@ export default defineConfig({
       }
     })
   ],
-  base: './',
+  base: '/registro-comidas/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
