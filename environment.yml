@@ -1,0 +1,9 @@
+name: rexistro-dev
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - nodejs=20
+  - python=3.11
+  - pip
+  - git

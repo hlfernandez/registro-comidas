@@ -1,0 +1,8 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="192" height="192" rx="24" fill="#2196F3"/>
+  <path d="M48 144C48 139.582 51.582 136 56 136H136C140.418 136 144 139.582 144 144V152C144 156.418 140.418 160 136 160H56C51.582 160 48 156.418 48 152V144Z" fill="white"/>
+  <circle cx="96" cy="96" r="32" fill="white"/>
+  <path d="M80 80C80 71.163 87.163 64 96 64C104.837 64 112 71.163 112 80V88H80V80Z" fill="#2196F3"/>
+  <path d="M96 48C104.837 48 112 55.163 112 64H80C80 55.163 87.163 48 96 48Z" fill="white"/>
+  <text x="96" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">🍽️</text>
+</svg>

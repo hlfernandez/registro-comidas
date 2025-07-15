@@ -1,0 +1,14 @@
+<!-- Placeholder para icono PWA 192x192 -->
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#21CBF3;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="24" fill="url(#bg)"/>
+  <circle cx="96" cy="96" r="48" fill="white" opacity="0.2"/>
+  <circle cx="96" cy="96" r="32" fill="white"/>
+  <text x="96" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#2196F3">🍽️</text>
+  <text x="96" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Rexistro</text>
+</svg>
