@@ -5,7 +5,7 @@ import MealList from './components/MealList'
 import MealForm from './components/MealForm'
 import SuggestionModal from './components/SuggestionModal'
 import IAConfigModal from './components/IAConfigModal'
-import { loadMeals, saveMeal, getMealsByType, getSmartSuggestions, getUniqueMealNames } from './utils/storage'
+import { loadMeals, saveMeal, getMealsByType, getSmartSuggestions, getUniqueMealNames, deleteMeal } from './utils/storage'
 import { getIASuggestions } from './utils/ia'
 
 function App() {
@@ -89,6 +89,11 @@ function App() {
     setShowSuggestion(false)
   }
 
+  const handleDeleteMeal = (mealId) => {
+    deleteMeal(mealId)
+    setMeals(loadMeals())
+  }
+
   const currentMeals = getMealsByType(activeTab)
 
   return (
@@ -107,7 +112,7 @@ function App() {
       />
 
       <main className="app-main">
-        <MealList meals={currentMeals} mealType={activeTab} />
+        <MealList meals={currentMeals} mealType={activeTab} onDeleteMeal={handleDeleteMeal} />
       </main>
 
       {showForm && (

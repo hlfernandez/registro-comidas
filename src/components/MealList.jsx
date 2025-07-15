@@ -1,6 +1,7 @@
 import './MealTabs.css'
+import { deleteMeal } from '../utils/storage'
 
-function MealList({ meals, mealType }) {
+function MealList({ meals, mealType, onDeleteMeal }) {
   const formatDate = (dateString) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('es-ES', {
@@ -43,6 +44,9 @@ function MealList({ meals, mealType }) {
             )}
             <div className="meal-footer">
               <span className="meal-date">{formatDate(meal.date)}</span>
+              <button className="btn btn-danger btn-small" onClick={() => onDeleteMeal(meal.id)} title="Eliminar">
+                🗑️
+              </button>
             </div>
           </div>
         ))}
