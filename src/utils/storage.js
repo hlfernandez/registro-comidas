@@ -36,8 +36,54 @@ export const getMealsByType = (type) => {
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 }
 
-// Obtener las comidas más antiguas por tipo para sugerencias
-export const getOldestMeals = (meals, limit = 3) => {
+// Obtener comidas únicas (por nombre) para el combobox
+export const getUniqueMealNames = (type = null) => {
+  const meals = loadMeals()
+  const filteredMeals = type ? meals.filter(meal => meal.type === type) : meals
+  
+  const uniqueNames = [...new Set(filteredMeals.map(meal => meal.name))]
+  return uniqueNames.sort()
+}
+
+// Obtener detalles de una comida por nombre (para autocompletar descripción)
+export const getMealDetailsByName = (name, type = null) => {
+  const meals = loadMeals()
+  const filteredMeals = type ? meals.filter(meal => meal.type === type) : meals
+  
+  const meal = filteredMeals.find(meal => meal.name.toLowerCase() === name.toLowerCase())
+  return meal ? { description: meal.description || '' } : null
+}
+
+// Obtener estadísticas de frecuencia de comidas en los últimos N días
+export const getMealFrequencyStats = (meals, days = 10) => {
+  const cutoffDate = new Date()
+  cutoffDate.setDate(cutoffDate.getDate() - days)
+  
+  const recentMeals = meals.filter(meal => new Date(meal.date) >= cutoffDate)
+  
+  const frequencyMap = recentMeals.reduce((acc, meal) => {
+    const key = meal.name.toLowerCase()
+    acc[key] = (acc[key] || 0) + 1
+    return acc
+  }, {})
+  
+  return frequencyMap
+}
+
+// Calcular días transcurridos desde una fecha
+export const getDaysAgo = (dateString) => {
+  const date = new Date(dateString)
+  const today = new Date()
+  const diffTime = today.setHours(0,0,0,0) - date.setHours(0,0,0,0)
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  
+  if (diffDays === 0) return 0
+  if (diffDays === 1) return 1
+  return diffDays
+}
+
+// Obtener sugerencias inteligentes basadas en frecuencia y tiempo
+export const getSmartSuggestions = (meals, limit = 3) => {
   // Agrupar por nombre de comida y obtener la fecha más reciente de cada una
   const mealsByName = meals.reduce((acc, meal) => {
     const key = meal.name.toLowerCase()
@@ -47,10 +93,37 @@ export const getOldestMeals = (meals, limit = 3) => {
     return acc
   }, {})
 
-  // Convertir a array y ordenar por fecha más antigua
-  return Object.values(mealsByName)
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
+  // Obtener estadísticas de frecuencia en los últimos 10 días
+  const frequencyStats = getMealFrequencyStats(meals, 10)
+  
+  // Crear array con información completa para sugerencias
+  const suggestions = Object.values(mealsByName).map(meal => {
+    const frequency = frequencyStats[meal.name.toLowerCase()] || 0
+    const daysAgo = getDaysAgo(meal.date)
+    
+    return {
+      ...meal,
+      frequency,
+      daysAgo,
+      // Puntuación para ordenar: menor frecuencia = mayor puntuación, más días = mayor puntuación
+      score: (10 - frequency) * 10 + daysAgo
+    }
+  })
+
+  // Ordenar por puntuación (menor frecuencia primero, luego por días)
+  return suggestions
+    .sort((a, b) => {
+      if (a.frequency !== b.frequency) {
+        return a.frequency - b.frequency // Menor frecuencia primero
+      }
+      return b.daysAgo - a.daysAgo // Más días primero si misma frecuencia
+    })
     .slice(0, limit)
+}
+
+// Obtener las comidas más antiguas por tipo para sugerencias (versión legacy)
+export const getOldestMeals = (meals, limit = 3) => {
+  return getSmartSuggestions(meals, limit)
 }
 
 // Eliminar una comida

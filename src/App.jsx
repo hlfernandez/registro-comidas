@@ -4,7 +4,7 @@ import MealTabs from './components/MealTabs'
 import MealList from './components/MealList'
 import MealForm from './components/MealForm'
 import SuggestionModal from './components/SuggestionModal'
-import { loadMeals, saveMeal, getMealsByType, getOldestMeals } from './utils/storage'
+import { loadMeals, saveMeal, getMealsByType, getSmartSuggestions, getUniqueMealNames } from './utils/storage'
 
 function App() {
   const [activeTab, setActiveTab] = useState('desayuno')
@@ -43,7 +43,26 @@ function App() {
 
   const getSuggestions = (mealType) => {
     const mealsByType = getMealsByType(mealType)
-    return getOldestMeals(mealsByType, 3)
+    return getSmartSuggestions(mealsByType, 3)
+  }
+
+  const getUniqueMealNamesForType = (mealType) => {
+    return getUniqueMealNames(mealType)
+  }
+
+  const handleAddFromSuggestion = (suggestionMeal) => {
+    const newMeal = {
+      name: suggestionMeal.name,
+      description: suggestionMeal.description || '',
+      date: new Date().toISOString().split('T')[0],
+      id: Date.now(),
+      type: currentMealType,
+      createdAt: new Date().toISOString()
+    }
+    
+    saveMeal(newMeal)
+    setMeals(loadMeals())
+    setShowSuggestion(false)
   }
 
   const currentMeals = getMealsByType(activeTab)
@@ -69,6 +88,7 @@ function App() {
       {showForm && (
         <MealForm
           mealType={currentMealType}
+          existingMealNames={getUniqueMealNamesForType(currentMealType)}
           onSave={handleSaveMeal}
           onCancel={() => setShowForm(false)}
         />
@@ -79,6 +99,7 @@ function App() {
           mealType={currentMealType}
           suggestions={getSuggestions(currentMealType)}
           onClose={() => setShowSuggestion(false)}
+          onAddFromSuggestion={handleAddFromSuggestion}
         />
       )}
     </div>

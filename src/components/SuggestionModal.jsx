@@ -1,4 +1,4 @@
-function SuggestionModal({ mealType, suggestions, onClose }) {
+function SuggestionModal({ mealType, suggestions, onClose, onAddFromSuggestion }) {
   const mealTypeLabels = {
     desayuno: 'Desayuno',
     comida: 'Comida',
@@ -14,15 +14,20 @@ function SuggestionModal({ mealType, suggestions, onClose }) {
     })
   }
 
-  const getDaysAgo = (dateString) => {
-    const date = new Date(dateString)
-    const today = new Date()
-    const diffTime = today - date
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
-    if (diffDays === 0) return 'Hoy'
-    if (diffDays === 1) return 'Ayer'
-    return `Hace ${diffDays} días`
+  const getDaysAgoText = (days) => {
+    if (days === 0) return 'Hoy'
+    if (days === 1) return 'Ayer'
+    return `hace ${days} días`
+  }
+
+  const getFrequencyText = (frequency) => {
+    if (frequency === 0) return 'No consumida en los últimos 10 días'
+    if (frequency === 1) return '1 vez en los últimos 10 días'
+    return `${frequency} veces en los últimos 10 días`
+  }
+
+  const handleAddMeal = (suggestion) => {
+    onAddFromSuggestion(suggestion)
   }
 
   return (
@@ -42,21 +47,31 @@ function SuggestionModal({ mealType, suggestions, onClose }) {
           ) : (
             <div className="suggestions-list">
               <p className="suggestion-intro">
-                Estas son las comidas que no has tomado hace más tiempo:
+                Sugerencias basadas en frecuencia y tiempo desde la última vez:
               </p>
               {suggestions.map(meal => (
                 <div key={meal.id} className="suggestion-item">
                   <div className="suggestion-header">
                     <h4>{meal.name}</h4>
-                    <span className="last-eaten">{getDaysAgo(meal.date)}</span>
+                    <div className="suggestion-stats">
+                      <span className="frequency-badge">
+                        {getFrequencyText(meal.frequency)}
+                      </span>
+                    </div>
                   </div>
                   {meal.description && (
                     <p className="suggestion-description">{meal.description}</p>
                   )}
                   <div className="suggestion-footer">
                     <span className="suggestion-date">
-                      Última vez: {formatDate(meal.date)}
+                      Última vez: {formatDate(meal.date)} ({getDaysAgoText(meal.daysAgo)})
                     </span>
+                    <button 
+                      className="btn btn-primary btn-small"
+                      onClick={() => handleAddMeal(meal)}
+                    >
+                      ➕ Añadir hoy
+                    </button>
                   </div>
                 </div>
               ))}

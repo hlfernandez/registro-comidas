@@ -376,3 +376,27 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## 🆕 Nuevas Funcionalidades
+
+### 🔍 Autocompletar comidas anteriores
+- **Registro rápido**: Al escribir el nombre de una comida, aparece un dropdown con sugerencias
+- **Autocompletado**: Selecciona una comida anterior y se autocompleta la descripción
+- **Filtrado inteligente**: Las sugerencias se filtran en tiempo real
+
+### 🧠 Sugerencias inteligentes mejoradas
+- **Ordenación por frecuencia**: Prioriza comidas menos consumidas en los últimos 10 días
+- **Información detallada**: Muestra frecuencia de consumo y días transcurridos
+- **Formato claro**: "X veces en los últimos 10 días" y "hace X días"
+
+### ➕ Añadir desde sugerencias
+- **Un solo clic**: Botón "➕ Añadir hoy" en cada sugerencia
+- **Registro instantáneo**: Se añade automáticamente con fecha actual
+- **Flujo optimizado**: Menos pasos para seguir las sugerencias
+
+### 📊 Algoritmo de sugerencias
+1. **Prioridad 1**: Comidas no consumidas en 10 días
+2. **Prioridad 2**: Comidas consumidas menos veces
+3. **Prioridad 3**: Comidas consumidas hace más tiempo
+
+---
