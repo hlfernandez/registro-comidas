@@ -4,14 +4,26 @@ import MealTabs from './components/MealTabs'
 import MealList from './components/MealList'
 import MealForm from './components/MealForm'
 import SuggestionModal from './components/SuggestionModal'
+import IAConfigModal from './components/IAConfigModal'
 import { loadMeals, saveMeal, getMealsByType, getSmartSuggestions, getUniqueMealNames } from './utils/storage'
+import { getIASuggestions } from './utils/ia'
 
 function App() {
   const [activeTab, setActiveTab] = useState('desayuno')
   const [showForm, setShowForm] = useState(false)
   const [showSuggestion, setShowSuggestion] = useState(false)
+  const [showIAConfig, setShowIAConfig] = useState(false)
   const [meals, setMeals] = useState([])
   const [currentMealType, setCurrentMealType] = useState('')
+  const [iaConfig, setIAConfig] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('rexistro-ia-config')) || {}
+    } catch {
+      return {}
+    }
+  })
+  const [iaSuggestions, setIASuggestions] = useState([])
+  const [loadingIASuggestions, setLoadingIASuggestions] = useState(false)
 
   useEffect(() => {
     const allMeals = loadMeals()
@@ -36,9 +48,21 @@ function App() {
     setShowForm(true)
   }
 
-  const handleShowSuggestion = (mealType) => {
+  const handleShowIAConfig = () => setShowIAConfig(true)
+  const handleSaveIAConfig = (config) => {
+    setIAConfig(config)
+    localStorage.setItem('rexistro-ia-config', JSON.stringify(config))
+  }
+
+  const handleShowSuggestion = async (mealType) => {
     setCurrentMealType(mealType)
     setShowSuggestion(true)
+    setLoadingIASuggestions(true)
+    // IA: obtener sugerencias IA (máx 3)
+    const historial = getMealsByType(mealType)
+    const iaSugs = await getIASuggestions({ historial, ...iaConfig, limit: 3 })
+    setIASuggestions(iaSugs)
+    setLoadingIASuggestions(false)
   }
 
   const getSuggestions = (mealType) => {
@@ -79,6 +103,7 @@ function App() {
         onTabChange={setActiveTab}
         onShowForm={handleShowForm}
         onShowSuggestion={handleShowSuggestion}
+        onShowIAConfig={handleShowIAConfig}
       />
 
       <main className="app-main">
@@ -98,8 +123,18 @@ function App() {
         <SuggestionModal
           mealType={currentMealType}
           suggestions={getSuggestions(currentMealType)}
+          iaSuggestions={iaSuggestions}
+          loadingIASuggestions={loadingIASuggestions}
           onClose={() => setShowSuggestion(false)}
           onAddFromSuggestion={handleAddFromSuggestion}
+        />
+      )}
+      {showIAConfig && (
+        <IAConfigModal
+          isOpen={showIAConfig}
+          onClose={() => setShowIAConfig(false)}
+          onSave={handleSaveIAConfig}
+          initialConfig={iaConfig}
         />
       )}
     </div>

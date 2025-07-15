@@ -1,4 +1,4 @@
-function SuggestionModal({ mealType, suggestions, onClose, onAddFromSuggestion }) {
+function SuggestionModal({ mealType, suggestions, iaSuggestions = [], loadingIASuggestions = false, onClose, onAddFromSuggestion }) {
   const mealTypeLabels = {
     desayuno: 'Desayuno',
     comida: 'Comida',
@@ -39,6 +39,9 @@ function SuggestionModal({ mealType, suggestions, onClose, onAddFromSuggestion }
         </div>
         
         <div className="suggestion-content">
+          <p className="suggestion-intro">
+            Sugerencias basadas en frecuencia y tiempo desde la última vez:
+          </p>
           {suggestions.length === 0 ? (
             <div className="no-suggestions">
               <p>No hay comidas registradas para generar sugerencias.</p>
@@ -46,9 +49,6 @@ function SuggestionModal({ mealType, suggestions, onClose, onAddFromSuggestion }
             </div>
           ) : (
             <div className="suggestions-list">
-              <p className="suggestion-intro">
-                Sugerencias basadas en frecuencia y tiempo desde la última vez:
-              </p>
               {suggestions.map(meal => (
                 <div key={meal.id} className="suggestion-item">
                   <div className="suggestion-header">
@@ -69,6 +69,32 @@ function SuggestionModal({ mealType, suggestions, onClose, onAddFromSuggestion }
                     <button 
                       className="btn btn-primary btn-small"
                       onClick={() => handleAddMeal(meal)}
+                    >
+                      ➕ Añadir hoy
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <hr />
+          <p className="suggestion-intro">Sugerencias IA:</p>
+          {loadingIASuggestions ? (
+            <div className="no-suggestions"><p>Cargando sugerencias IA...</p></div>
+          ) : iaSuggestions.length === 0 ? (
+            <div className="no-suggestions"><p>No hay sugerencias IA disponibles.</p></div>
+          ) : (
+            <div className="suggestions-list">
+              {iaSuggestions.map((name, idx) => (
+                <div key={name+idx} className="suggestion-item">
+                  <div className="suggestion-header">
+                    <h4>{name}</h4>
+                  </div>
+                  <div className="suggestion-footer">
+                    <button 
+                      className="btn btn-primary btn-small"
+                      onClick={() => handleAddMeal({ name, description: '', date: new Date().toISOString().split('T')[0] })}
                     >
                       ➕ Añadir hoy
                     </button>

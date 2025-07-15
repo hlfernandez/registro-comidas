@@ -6,7 +6,7 @@ const MEAL_TYPES = {
   cena: { icon: '🌙', label: 'Cena' }
 }
 
-function MealTabs({ activeTab, onTabChange, onShowForm, onShowSuggestion }) {
+function MealTabs({ activeTab, onTabChange, onShowForm, onShowSuggestion, onShowIAConfig }) {
   return (
     <div className="meal-tabs">
       <div className="tab-nav">
@@ -37,6 +37,13 @@ function MealTabs({ activeTab, onTabChange, onShowForm, onShowSuggestion }) {
               onClick={() => onShowSuggestion(activeTab)}
             >
               💡 Sugerencia
+            </button>
+            <button
+              className="btn btn-config"
+              onClick={onShowIAConfig}
+              title="Configurar IA"
+            >
+              🤖 IA
             </button>
           </div>
         </div>
